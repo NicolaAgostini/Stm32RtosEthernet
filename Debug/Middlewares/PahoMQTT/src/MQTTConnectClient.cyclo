@@ -1,0 +1,6 @@
+../Middlewares/PahoMQTT/src/MQTTConnectClient.c:27:5:MQTTSerialize_connectLength	8
+../Middlewares/PahoMQTT/src/MQTTConnectClient.c:58:5:MQTTSerialize_connect	11
+../Middlewares/PahoMQTT/src/MQTTConnectClient.c:132:5:MQTTDeserialize_connack	3
+../Middlewares/PahoMQTT/src/MQTTConnectClient.c:169:5:MQTTSerialize_zero	2
+../Middlewares/PahoMQTT/src/MQTTConnectClient.c:199:5:MQTTSerialize_disconnect	1
+../Middlewares/PahoMQTT/src/MQTTConnectClient.c:211:5:MQTTSerialize_pingreq	1
