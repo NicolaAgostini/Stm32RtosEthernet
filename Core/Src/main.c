@@ -482,11 +482,9 @@ void Handle_MQTT(void const * argument)
   /* USER CODE BEGIN Handle_MQTT */
   /* Infinite loop */
 	//
-	for(;;)
-	{
-		MQTT_Cycle();
-		osDelay(50);
-	}
+
+	MQTT_Cycle();
+
 
 
   /* USER CODE END Handle_MQTT */

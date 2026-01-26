@@ -1,1 +1,3 @@
-../Core/Src/mqtt.c:14:6:MQTT_Cycle	3
+../Core/Src/mqtt.c:19:6:messageArrived	1
+../Core/Src/mqtt.c:30:6:sendMessage	2
+../Core/Src/mqtt.c:49:6:MQTT_Cycle	5

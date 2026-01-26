@@ -38,7 +38,7 @@ int NetworkConnect(Network* n, const char* addr, int port)
     }
 
     if (Network_IsReady()) {
-        printf("IP: %s\n", ip4addr_ntoa(netif_ip4_addr(&gnetif)));
+        printf("Network is ready -> IP: %s\n", ip4addr_ntoa(netif_ip4_addr(&gnetif)));
     } else {
         printf("Network not ready\n");
     }
@@ -50,22 +50,24 @@ int NetworkConnect(Network* n, const char* addr, int port)
     }
 
     // Imposta socket non bloccante
+    /*
     int flags = lwip_fcntl(n->my_socket, F_GETFL, 0);
     lwip_fcntl(n->my_socket, F_SETFL, flags | O_NONBLOCK);
+    */
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
     serverAddr.sin_addr.s_addr = inet_addr(addr);
 
-    //int ret = lwip_connect(n->my_socket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
-    int ret = -1;
+    int ret = lwip_connect(n->my_socket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
+    //int ret = -1;
     if (ret < 0) {
         if (errno == EINPROGRESS) {
             // Connessione in corso → OK, torniamo subito e proveremo più tardi
             printf("Connect in progress...\n");
             return 0;
         } else {
-            printf("Connect failed, ret=%d errno=%d\n", ret, errno);
+            printf("Connect failed, ret=%d errno=%d\n", ret, errno); //Se errore 104 significa che il broker rifiuta la connessione (mosquitto -> impostare allow_anonymus true)
             lwip_close(n->my_socket);
             n->my_socket = -1;
             osDelay(500); // piccola pausa prima di ritentare

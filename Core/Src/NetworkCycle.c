@@ -15,7 +15,8 @@ extern struct netif gnetif;
 void Network_Cycle(void)
 {
 	//printf("Task network 2!\r\n");
-	sys_check_timeouts();        // timer LwIP
+	//sys_check_timeouts();        // timer LwIP
 	//printf("IP AAAAAAA: %s\n", ip4addr_ntoa(netif_ip4_addr(&gnetif)));
+    sys_check_timeouts();
 
 }

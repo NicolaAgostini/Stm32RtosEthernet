@@ -9,7 +9,7 @@
 ../Core/Src/main.c:440:6:StartDefaultTask	1
 ../Core/Src/main.c:460:6:StartInputTask	1
 ../Core/Src/main.c:480:6:Handle_MQTT	1
-../Core/Src/main.c:502:6:NetworkTask_Cycle	1
-../Core/Src/main.c:518:6:MPU_Config	1
-../Core/Src/main.c:553:6:HAL_TIM_PeriodElapsedCallback	2
-../Core/Src/main.c:571:6:Error_Handler	1
+../Core/Src/main.c:500:6:NetworkTask_Cycle	1
+../Core/Src/main.c:516:6:MPU_Config	1
+../Core/Src/main.c:551:6:HAL_TIM_PeriodElapsedCallback	2
+../Core/Src/main.c:569:6:Error_Handler	1

@@ -1,4 +1,5 @@
 "./Core/Src/NetworkCycle.o"
+"./Core/Src/config.o"
 "./Core/Src/cycle.o"
 "./Core/Src/freertos.o"
 "./Core/Src/main.o"
