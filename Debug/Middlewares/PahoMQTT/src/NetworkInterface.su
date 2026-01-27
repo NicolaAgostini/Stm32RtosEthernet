@@ -1,6 +1,6 @@
 ../Middlewares/PahoMQTT/src/NetworkInterface.c:17:6:NetworkInit	16	static
 ../Middlewares/PahoMQTT/src/NetworkInterface.c:25:12:Network_IsReady	4	static
-../Middlewares/PahoMQTT/src/NetworkInterface.c:31:5:NetworkConnect	48	static
-../Middlewares/PahoMQTT/src/NetworkInterface.c:82:5:NetworkDisconnect	16	static
-../Middlewares/PahoMQTT/src/NetworkInterface.c:91:5:NetworkRead	64	static
-../Middlewares/PahoMQTT/src/NetworkInterface.c:108:5:NetworkWrite	64	static
+../Middlewares/PahoMQTT/src/NetworkInterface.c:31:5:NetworkConnect	56	static
+../Middlewares/PahoMQTT/src/NetworkInterface.c:94:5:NetworkDisconnect	16	static
+../Middlewares/PahoMQTT/src/NetworkInterface.c:103:5:NetworkRead	64	static
+../Middlewares/PahoMQTT/src/NetworkInterface.c:120:5:NetworkWrite	64	static

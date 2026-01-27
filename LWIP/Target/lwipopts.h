@@ -119,7 +119,8 @@
 /* USER CODE BEGIN 1 */
  // lwipopts.h
 
-
+#define LWIP_SO_RCVTIMEO                1
+#define LWIP_SO_SNDTIMEO                1
 
 /* USER CODE END 1 */
 

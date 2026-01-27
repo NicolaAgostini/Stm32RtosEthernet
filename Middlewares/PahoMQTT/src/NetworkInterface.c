@@ -49,11 +49,15 @@ int NetworkConnect(Network* n, const char* addr, int port)
         return -1;
     }
 
-    // Imposta socket non bloccante
-    /*
-    int flags = lwip_fcntl(n->my_socket, F_GETFL, 0);
-    lwip_fcntl(n->my_socket, F_SETFL, flags | O_NONBLOCK);
-    */
+    // NB: IMPOSTA IL TIMEOUT (100ms) altrimenti MQTYeld rimane in attesa in ricezione del publish e non invia..
+	// Se LWIP_SO_RCVTIMEO è 1 su lwipopts.h
+	//#define LWIP_SO_RCVTIMEO                1
+	//#define LWIP_SO_SNDTIMEO                1
+
+	int timeout = 100; // In millisecondi per LwIP
+	if (lwip_setsockopt(n->my_socket, SOL_SOCKET, SO_RCVTIMEO, &timeout, sizeof(timeout)) < 0) {
+		printf("ERRORE: SO_RCVTIMEO non supportato! Controlla lwipopts.h\n");
+	}
 
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_port = htons(port);
@@ -74,7 +78,15 @@ int NetworkConnect(Network* n, const char* addr, int port)
             return -1;
         }
     }
-
+    /*
+    // Trasformo in modalità bloccante Da questo momento in poi, le funzioni di lettura/scrittura torneranno immediatamente
+	int flags = lwip_fcntl(n->my_socket, F_GETFL, 0);
+	if (flags < 0 || lwip_fcntl(n->my_socket, F_SETFL, flags | O_NONBLOCK) < 0)
+	{
+		printf("Errore nell'impostazione O_NONBLOCK\n");
+		// Opzionale: decidere se chiudere o proseguire. Di solito si prosegue.
+	}
+	*/
     printf("MQTT Broker connected immediately!\n");
     return 0;
 }

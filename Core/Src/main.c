@@ -159,7 +159,7 @@ int main(void)
   InputTaskHandle = osThreadCreate(osThread(InputTask), NULL);
 
   /* definition and creation of mqtt_task */
-  osThreadDef(mqtt_task, Handle_MQTT, osPriorityLow, 0, 4096);
+  osThreadDef(mqtt_task, Handle_MQTT, osPriorityNormal, 0, 8192);
   mqtt_taskHandle = osThreadCreate(osThread(mqtt_task), NULL);
 
   /* definition and creation of networkTask */

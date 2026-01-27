@@ -12,7 +12,7 @@
 ../Middlewares/Third_Party/LwIP/src/api/api_msg.c:705:1:netconn_alloc	32	static
 ../Middlewares/Third_Party/LwIP/src/api/api_msg.c:794:1:netconn_free	16	static
 ../Middlewares/Third_Party/LwIP/src/api/api_msg.c:827:1:netconn_drain	32	static
-../Middlewares/Third_Party/LwIP/src/api/api_msg.c:920:1:lwip_netconn_do_close_internal	32	static
+../Middlewares/Third_Party/LwIP/src/api/api_msg.c:920:1:lwip_netconn_do_close_internal	40	static
 ../Middlewares/Third_Party/LwIP/src/api/api_msg.c:1113:1:lwip_netconn_do_delconn	24	static
 ../Middlewares/Third_Party/LwIP/src/api/api_msg.c:1216:1:lwip_netconn_do_bind	24	static
 ../Middlewares/Third_Party/LwIP/src/api/api_msg.c:1256:1:lwip_netconn_do_bind_if	32	static
