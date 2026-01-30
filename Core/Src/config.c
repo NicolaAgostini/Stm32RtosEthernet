@@ -6,6 +6,6 @@
  */
 
 
-const char *MQTT_BROKER_IP = "192.168.250.124";
+const char *MQTT_BROKER_IP = "192.168.250.125";
 const int MQTT_BROKER_PORT = 1883;
 

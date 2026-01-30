@@ -8,12 +8,16 @@
 #include "NetworkInterface.h"
 #include "config.h"
 #include "lwip/netif.h"
+#include "cmsis_os.h"
 
 extern struct netif gnetif;
 
 Network network;
 MQTTClient client;
-unsigned char sendbuf[128], readbuf[128];
+__attribute__((aligned(4))) unsigned char sendbuf[1024];
+__attribute__((aligned(4))) unsigned char readbuf[1024];
+
+osSemaphoreId mqtt_mutexHandle;
 
 typedef enum {
     MQTT_STATE_INIT,
@@ -37,10 +41,15 @@ void messageArrived(MessageData* data)
 
 void sendWatchdog(uint32_t counter)
 {
+	if (client.isconnected == 0 || network.my_socket < 0)
+	{
+	    //printf("Salto Publish: client non connesso\n");
+	    return;
+	}
 	printf("COUNTER: %lu\r\n", counter);
 	// Prepara il messaggio
 	MQTTMessage pubMessage;
-	char payloadBuffer[64];
+	static char payloadBuffer[128];
 	snprintf(payloadBuffer, sizeof(payloadBuffer), "WatchDog da STM32! Conteggio: %lu", counter);
 
 	pubMessage.qos = QOS0;          // Qualità del servizio (0, 1 o 2)
@@ -48,12 +57,17 @@ void sendWatchdog(uint32_t counter)
 	pubMessage.payload = payloadBuffer;   // Il contenuto
 	pubMessage.payloadlen = strlen(payloadBuffer);
 
-	// Pubblica sul topic "stm32/dati"
-	if (MQTTPublish(&client, "machine/watchDog", &pubMessage) != MQTT_SUCCESS) {
-		printf("Errore durante il Publish\n");
-	} else {
-		printf("Messaggio inviato: %s\n", payloadBuffer);
+	/*
+	if (osSemaphoreWait(mqtt_mutexHandle, 100) == osOK)
+	{
+		if (client.isconnected)
+		{
+			MQTTPublish(&client, "machine/watchDog", &pubMessage);
+		}
+		osSemaphoreRelease(mqtt_mutexHandle);
 	}
+	*/
+	MQTTPublish(&client, "machine/watchDog", &pubMessage);
 }
 
 void MQTT_Cycle(void)
@@ -81,7 +95,7 @@ void MQTT_Cycle(void)
 				printf("Connessione al socket TCP (%s:%d)...\n", MQTT_BROKER_IP, MQTT_BROKER_PORT);
 				if (NetworkConnect(&network, MQTT_BROKER_IP, MQTT_BROKER_PORT) == 0) {
 					// Inizializziamo il client solo dopo che il socket è ok
-					MQTTClientInit(&client, &network, 1000, sendbuf, sizeof(sendbuf), readbuf, sizeof(readbuf));
+					MQTTClientInit(&client, &network, 30000, sendbuf, sizeof(sendbuf), readbuf, sizeof(readbuf));
 					currentState = MQTT_STATE_CONNECT_BROKER;
 				} else {
 					printf("Errore NetworkConnect. Riprovo...\n");
@@ -97,6 +111,7 @@ void MQTT_Cycle(void)
 					connectData.keepAliveInterval = 60; // Secondi
 
 					printf("Invio pacchetto MQTT CONNECT...\n");
+					//qui metto le subscribe!
 					if ((rc = MQTTConnect(&client, &connectData)) == 0) {
 						printf("MQTT Connesso!\n");
 						MQTTSubscribe(&client, "test/topic", QOS0, messageArrived);
@@ -113,8 +128,10 @@ void MQTT_Cycle(void)
 
 			case MQTT_STATE_RUNNING:
 				// Gestione messaggi in arrivo e Keep-Alive
-
+				//osSemaphoreWait(mqtt_mutexHandle, osWaitForever);
+				//printf("countdown: %d\r\n", (int)client.keepAliveInterval);
 				rc = MQTTYield(&client, 10);
+				//osSemaphoreRelease(mqtt_mutexHandle);
 				//printf("MQTT_STATE_RUNNING\n");
 				if (rc != MQTT_SUCCESS) {
 					printf("Connessione persa (Yield error)...\n");
@@ -124,8 +141,10 @@ void MQTT_Cycle(void)
 
 				// tempo del Watchdog (ogni 5 secondi)
 				uint32_t currentTick = osKernelSysTick();
-				if ((currentTick - lastWatchdogTick) >= 5000) {
+				if ((currentTick - lastWatchdogTick) >= 5000)
+				{
 					sendWatchdog(counter++);
+
 					lastWatchdogTick = currentTick;
 
 					if (counter > (1UL << 31)) counter = 0;
@@ -137,9 +156,14 @@ void MQTT_Cycle(void)
 			case MQTT_STATE_ERROR:
 				// Pulizia in caso di errore
 				printf("Reset connessione in corso...\n");
-				lwip_close(network.my_socket);
-				network.my_socket = -1;
+				//osSemaphoreWait(mqtt_mutexHandle, osWaitForever);
+				if (network.my_socket >= 0)
+				{
+					lwip_close(network.my_socket);
+					network.my_socket = -1;
+				}
 				client.isconnected = 0;
+				//osSemaphoreRelease(mqtt_mutexHandle);
 				osDelay(2000);
 				currentState = MQTT_STATE_INIT;
 				break;

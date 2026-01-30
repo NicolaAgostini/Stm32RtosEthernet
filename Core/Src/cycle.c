@@ -16,7 +16,7 @@ static bool echoBtnPC9 = false;
 static bool BtnPC9_ActState = false;
 static bool LedPC8_actState = false;
 
-static uint32_t startTime, delta;
+static uint32_t startTime, delta, delta_green, startTime_green;
 static uint32_t filterTimeBtn = 100;
 
 void Cycle_HandleInput(void)
@@ -42,9 +42,17 @@ void Cycle_HandleInput(void)
 			printf("Accendo!\r\n");
 		}
 
-			startTime = HAL_GetTick();
+		startTime = HAL_GetTick();
 	}
 
     echoBtnPC9 = BtnPC9_ActState;
+
+    //led green ok toggle
+    delta_green = HAL_GetTick() - startTime_green;
+    if (delta_green > 5000)
+    {
+    	HAL_GPIO_TogglePin(GPIOC, GPIO_PIN_10);
+    	startTime_green = HAL_GetTick();
+    }
 
 }
