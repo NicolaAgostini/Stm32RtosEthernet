@@ -266,6 +266,10 @@ int cycle(MQTTClient* c, Timer* timer)
     {
         default:
             /* no more data to read, unrecoverable. Or read packet fails due to unexpected network error */
+        	if (packet_type < 0) //first debug
+        	{
+        		//printf("DEBUG: readPacket error, rc = %d\n", packet_type);
+        	}
             rc = packet_type;
             goto exit;
         case 0: /* timed out reading packet */
@@ -283,9 +287,17 @@ int cycle(MQTTClient* c, Timer* timer)
             msg.payloadlen = 0; /* this is a size_t, but deserialize publish sets this as int */
             if (MQTTDeserialize_publish(&msg.dup, &intQoS, &msg.retained, &msg.id, &topicName,
                (unsigned char**)&msg.payload, (int*)&msg.payloadlen, c->readbuf, c->readbuf_size) != 1)
+            {
+            	//printf("DEBUG: Fallita deserializzazione PUBLISH!\n");
                 goto exit;
+            }
+
             msg.qos = (enum QoS)intQoS;
+
+            //printf("DEBUG: Chiamata deliverMessage...\n");
             deliverMessage(c, &topicName, &msg);
+            //printf("DEBUG: deliverMessage terminata.\n");
+
             if (msg.qos != QOS0)
             {
                 if (msg.qos == QOS1)
@@ -293,9 +305,15 @@ int cycle(MQTTClient* c, Timer* timer)
                 else if (msg.qos == QOS2)
                     len = MQTTSerialize_ack(c->buf, c->buf_size, PUBREC, 0, msg.id);
                 if (len <= 0)
+                {
+                	//printf("DEBUG: Errore serializzazione ACK\n");
                     rc = MQTT_FAILURE;
+                }
                 else
+                {
                     rc = sendPacket(c, len, timer);
+                    if (rc != MQTT_SUCCESS) printf("DEBUG: Errore invio ACK, rc=%d\n", rc);
+                }
                 if (rc == MQTT_FAILURE)
                     goto exit; // there was a problem
             }
@@ -307,12 +325,21 @@ int cycle(MQTTClient* c, Timer* timer)
             unsigned short mypacketid;
             unsigned char dup, type;
             if (MQTTDeserialize_ack(&type, &dup, &mypacketid, c->readbuf, c->readbuf_size) != 1)
+            {
+            	//printf("DEBUG: Errore deserializzazione ACK (PUBREC/REL)\n");
                 rc = MQTT_FAILURE;
+            }
             else if ((len = MQTTSerialize_ack(c->buf, c->buf_size,
                 (packet_type == PUBREC) ? PUBREL : PUBCOMP, 0, mypacketid)) <= 0)
+            {
+            	//printf("DEBUG: Errore serializzazione PUBREL/COMP\n");
                 rc = MQTT_FAILURE;
+            }
             else if ((rc = sendPacket(c, len, timer)) != MQTT_SUCCESS) // send the PUBREL packet
+            {
+            	//printf("DEBUG: Errore invio PUBREL/COMP, rc=%d\n", rc);
                 rc = MQTT_FAILURE; // there was a problem
+            }
             if (rc == MQTT_FAILURE)
                 goto exit; // there was a problem
             break;
@@ -321,11 +348,13 @@ int cycle(MQTTClient* c, Timer* timer)
         case PUBCOMP:
             break;
         case PINGRESP:
+        	//printf("DEBUG: PINGRESP ricevuto correttamente\n");
             c->ping_outstanding = 0;
             break;
     }
 
     if (keepalive(c) != MQTT_SUCCESS) {
+    	printf("DEBUG: FAILURE nel keepalive (Timer scaduto o invio PING fallito)\n");
         //check only keepalive FAILURE status so that previous FAILURE status can be considered as FAULT
         rc = MQTT_FAILURE;
     }
@@ -334,7 +363,11 @@ exit:
     if (rc == MQTT_SUCCESS)
         rc = packet_type;
     else if (c->isconnected)
+    {
+    	printf("DEBUG: Chiusura sessione MQTT per errore rc=%d\n", rc);
         MQTTCloseSession(c);
+    }
+
     return rc;
 }
 

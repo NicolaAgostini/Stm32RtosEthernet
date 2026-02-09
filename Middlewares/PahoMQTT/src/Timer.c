@@ -30,6 +30,7 @@ int TimerLeftMS(Timer* t)
     return (diff > 0) ? diff : 0;
 }
 
+//timer in millisecond
 void TimerCountdown(Timer* t, unsigned int timeout)
 {
     t->end_time = HAL_GetTick() + timeout;

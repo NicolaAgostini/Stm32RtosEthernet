@@ -30,6 +30,7 @@ typedef enum {
 // callback per messaggio arrivato
 void messageArrived(MessageData* data)
 {
+
     printf("MQTT RX topic: %.*s\r\n",
            data->topicName->lenstring.len,
            data->topicName->lenstring.data);
@@ -37,6 +38,7 @@ void messageArrived(MessageData* data)
     printf("MQTT RX payload: %.*s\r\n",
            data->message->payloadlen,
            (char*)data->message->payload);
+
 }
 
 void sendWatchdog(uint32_t counter)
@@ -108,7 +110,7 @@ void MQTT_Cycle(void)
 					MQTTPacket_connectData connectData = MQTTPacket_connectData_initializer;
 					connectData.MQTTVersion = 3;
 					connectData.clientID.cstring = "STM32F756ZG";
-					connectData.keepAliveInterval = 60; // Secondi
+					connectData.keepAliveInterval = 60000; // millisecondi!!!
 
 					printf("Invio pacchetto MQTT CONNECT...\n");
 					//qui metto le subscribe!
@@ -134,7 +136,7 @@ void MQTT_Cycle(void)
 				//osSemaphoreRelease(mqtt_mutexHandle);
 				//printf("MQTT_STATE_RUNNING\n");
 				if (rc != MQTT_SUCCESS) {
-					printf("Connessione persa (Yield error)...\n");
+					printf("Connessione persa (Yield error)...%d\n", rc);
 					currentState = MQTT_STATE_ERROR;
 					break;
 				}
