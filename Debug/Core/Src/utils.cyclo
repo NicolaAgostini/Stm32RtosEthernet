@@ -1,0 +1,5 @@
+../Core/Src/utils.c:22:6:set_rtc_from_sntp	2
+../Core/Src/utils.c:52:6:print_system_time_string	1
+../Core/Src/utils.c:61:5:get_system_time_string	7
+../Core/Src/utils.c:88:6:start_sntp_service	1
+../Core/Src/utils.c:104:6:set_rtc_manual	1

@@ -10,7 +10,15 @@
 #include "lwip/netif.h"
 #include "cmsis_os.h"
 
+#include "queue.h"
+
+#include "lwip/apps/sntp.h"
+#include "utils.h"
+
+
 extern struct netif gnetif;
+extern osMessageQId flashQueueHandle;
+extern RTC_HandleTypeDef hrtc; // Recuperiamo l'handle dell'RTC definito nel main.c
 
 Network network;
 MQTTClient client;
@@ -48,27 +56,30 @@ void sendWatchdog(uint32_t counter)
 	    //printf("Salto Publish: client non connesso\n");
 	    return;
 	}
+	// read timestamp
+	RTC_TimeTypeDef sTime;
+	RTC_DateTypeDef sDate;
+	HAL_RTC_GetTime(&hrtc, &sTime, RTC_FORMAT_BIN);
+	HAL_RTC_GetDate(&hrtc, &sDate, RTC_FORMAT_BIN); // NB: va sempre letta dopo l'ora!
+
+	printf("Hour: [%02d:%02d:%02d] Date:[%02d/%02d/%04d] COUNTER: %lu\r\n", sTime.Hours, sTime.Minutes, sTime.Seconds,
+			sDate.Date, sDate.Month, sDate.Year+2000, counter);
+
 	printf("COUNTER: %lu\r\n", counter);
+
 	// Prepara il messaggio
 	MQTTMessage pubMessage;
 	static char payloadBuffer[128];
-	snprintf(payloadBuffer, sizeof(payloadBuffer), "WatchDog da STM32! Conteggio: %lu", counter);
+	snprintf(payloadBuffer, sizeof(payloadBuffer), "WatchDog da STM32!, Ora: %02d:%02d:%02d Data: %02d:%02d:%04d Conteggio: %lu", sTime.Hours,
+			sTime.Minutes, sTime.Seconds, sDate.Date, sDate.Month, sDate.Year+2000, counter);
+
+
 
 	pubMessage.qos = QOS0;          // Qualità del servizio (0, 1 o 2)
 	pubMessage.retained = 0;        // Il broker non deve conservare il messaggio
 	pubMessage.payload = payloadBuffer;   // Il contenuto
 	pubMessage.payloadlen = strlen(payloadBuffer);
 
-	/*
-	if (osSemaphoreWait(mqtt_mutexHandle, 100) == osOK)
-	{
-		if (client.isconnected)
-		{
-			MQTTPublish(&client, "machine/watchDog", &pubMessage);
-		}
-		osSemaphoreRelease(mqtt_mutexHandle);
-	}
-	*/
 	MQTTPublish(&client, "machine/watchDog", &pubMessage);
 }
 
@@ -85,7 +96,22 @@ void MQTT_Cycle(void)
 			case MQTT_STATE_INIT:
 				// Aspettiamo che l'interfaccia LwIP sia pronta
 				if (netif_is_up(&gnetif) && netif_is_link_up(&gnetif)) {
+
 					NetworkInit(&network);
+
+					// Configure Server DNS (Google)
+					ip_addr_t dns_primary;
+					IP4_ADDR(&dns_primary, 8, 8, 8, 8);
+					dns_setserver(0, &dns_primary);
+
+					// Configure Server DNS (Cloudflare)
+					ip_addr_t dns_secondary;
+					IP4_ADDR(&dns_secondary, 1, 1, 1, 1);
+					dns_setserver(1, &dns_secondary);
+
+					//start SNTP service
+					start_sntp_service();
+
 					currentState = MQTT_STATE_CONNECT_NETWORK;
 				} else {
 					printf("In attesa del link Ethernet...\n");
@@ -146,6 +172,8 @@ void MQTT_Cycle(void)
 				if ((currentTick - lastWatchdogTick) >= 5000)
 				{
 					sendWatchdog(counter++);
+
+					xQueueOverwrite(flashQueueHandle, &counter); //per sovrascrivere se la coda è piena (se nessuno legge e svuota)
 
 					lastWatchdogTick = currentTick;
 

@@ -31,6 +31,9 @@
 #include "mqtt.h"
 #include "NetworkCycle.h"
 
+#include "saveFlashCycle.h"
+
+#include "utils.h"
 
 
 /* USER CODE END Includes */
@@ -55,6 +58,8 @@
 
 I2C_HandleTypeDef hi2c1;
 
+RTC_HandleTypeDef hrtc;
+
 UART_HandleTypeDef huart3;
 
 PCD_HandleTypeDef hpcd_USB_OTG_FS;
@@ -63,6 +68,8 @@ osThreadId defaultTaskHandle;
 osThreadId InputTaskHandle;
 osThreadId mqtt_taskHandle;
 osThreadId networkTaskHandle;
+osThreadId saveFlashHandle;
+osMessageQId flashQueueHandle;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -74,10 +81,12 @@ static void MX_GPIO_Init(void);
 static void MX_I2C1_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
+static void MX_RTC_Init(void);
 void StartDefaultTask(void const * argument);
 void StartInputTask(void const * argument);
 void Handle_MQTT(void const * argument);
 void NetworkTask_Cycle(void const * argument);
+void SaveFlashMemory(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -129,6 +138,7 @@ int main(void)
   MX_I2C1_Init();
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
+  MX_RTC_Init();
   /* USER CODE BEGIN 2 */
 
   //osSemaphoreDef(mqtt_mutex);
@@ -147,6 +157,11 @@ int main(void)
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
   /* USER CODE END RTOS_TIMERS */
+
+  /* Create the queue(s) */
+  /* definition and creation of flashQueue */
+  osMessageQDef(flashQueue, 1, uint32_t);
+  flashQueueHandle = osMessageCreate(osMessageQ(flashQueue), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
@@ -168,6 +183,10 @@ int main(void)
   /* definition and creation of networkTask */
   osThreadDef(networkTask, NetworkTask_Cycle, osPriorityNormal, 0, 8192);
   networkTaskHandle = osThreadCreate(osThread(networkTask), NULL);
+
+  /* definition and creation of saveFlash */
+  osThreadDef(saveFlash, SaveFlashMemory, osPriorityBelowNormal, 0, 512);
+  saveFlashHandle = osThreadCreate(osThread(saveFlash), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -201,6 +220,7 @@ void SystemClock_Config(void)
   /** Configure LSE Drive Capability
   */
   HAL_PWR_EnableBkUpAccess();
+  __HAL_RCC_LSEDRIVE_CONFIG(RCC_LSEDRIVE_LOW);
 
   /** Configure the main internal regulator output voltage
   */
@@ -210,8 +230,9 @@ void SystemClock_Config(void)
   /** Initializes the RCC Oscillators according to the specified parameters
   * in the RCC_OscInitTypeDef structure.
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE|RCC_OSCILLATORTYPE_LSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+  RCC_OscInitStruct.LSEState = RCC_LSE_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
@@ -283,6 +304,69 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  RTC_TimeTypeDef sTime = {0};
+  RTC_DateTypeDef sDate = {0};
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+
+  /** Initialize RTC Only
+  */
+  hrtc.Instance = RTC;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+  hrtc.Init.AsynchPrediv = 127;
+  hrtc.Init.SynchPrediv = 255;
+  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* USER CODE BEGIN Check_RTC_BKUP */
+
+  /* USER CODE END Check_RTC_BKUP */
+
+  /** Initialize RTC and set the Time and Date
+  */
+  sTime.Hours = 0x0;
+  sTime.Minutes = 0x0;
+  sTime.Seconds = 0x0;
+  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+  sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.Month = RTC_MONTH_JANUARY;
+  sDate.Date = 0x1;
+  sDate.Year = 0x0;
+
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BCD) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RTC_Init 2 */
+
+  /* USER CODE END RTC_Init 2 */
 
 }
 
@@ -418,8 +502,8 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC9 */
-  GPIO_InitStruct.Pin = GPIO_PIN_9;
+  /*Configure GPIO pins : PC9 PC11 */
+  GPIO_InitStruct.Pin = GPIO_PIN_9|GPIO_PIN_11;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -512,6 +596,41 @@ void NetworkTask_Cycle(void const * argument)
 	  osDelay(10);
   }
   /* USER CODE END NetworkTask_Cycle */
+}
+
+/* USER CODE BEGIN Header_SaveFlashMemory */
+/**
+* @brief Function implementing the saveFlash thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_SaveFlashMemory */
+void SaveFlashMemory(void const * argument)
+{
+  /* USER CODE BEGIN SaveFlashMemory */
+
+	osEvent event;
+
+	//recupero valori ultimi dalla flash
+	uint32_t counter[7];
+	uint8_t val = Flash_Read(&counter);
+
+	if(val != -1)
+	{
+		//imposta ora
+		set_rtc_manual((uint8_t)counter[6], (uint8_t)counter[5], (uint8_t)counter[4], (uint8_t)counter[3], (uint8_t)counter[2], (uint8_t)counter[1]);
+
+		printf("Flash: Valore scritto %lu ----\r\n", counter[0]);
+	}
+
+
+  /* Infinite loop */
+  for(;;)
+  {
+	  StartButtonTask(&event);
+	  osDelay(10);
+  }
+  /* USER CODE END SaveFlashMemory */
 }
 
  /* MPU Configuration */

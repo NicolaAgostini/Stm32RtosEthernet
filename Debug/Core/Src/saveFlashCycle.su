@@ -1,0 +1,3 @@
+../Core/Src/saveFlashCycle.c:26:6:StartButtonTask	56	static
+../Core/Src/saveFlashCycle.c:80:6:Flash_Write	64	static
+../Core/Src/saveFlashCycle.c:146:9:Flash_Read	40	static

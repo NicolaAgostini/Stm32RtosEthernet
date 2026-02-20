@@ -11,12 +11,14 @@ C_SRCS += \
 ../Core/Src/freertos.c \
 ../Core/Src/main.c \
 ../Core/Src/mqtt.c \
+../Core/Src/saveFlashCycle.c \
 ../Core/Src/stm32f7xx_hal_msp.c \
 ../Core/Src/stm32f7xx_hal_timebase_tim.c \
 ../Core/Src/stm32f7xx_it.c \
 ../Core/Src/syscalls.c \
 ../Core/Src/sysmem.c \
-../Core/Src/system_stm32f7xx.c 
+../Core/Src/system_stm32f7xx.c \
+../Core/Src/utils.c 
 
 OBJS += \
 ./Core/Src/NetworkCycle.o \
@@ -25,12 +27,14 @@ OBJS += \
 ./Core/Src/freertos.o \
 ./Core/Src/main.o \
 ./Core/Src/mqtt.o \
+./Core/Src/saveFlashCycle.o \
 ./Core/Src/stm32f7xx_hal_msp.o \
 ./Core/Src/stm32f7xx_hal_timebase_tim.o \
 ./Core/Src/stm32f7xx_it.o \
 ./Core/Src/syscalls.o \
 ./Core/Src/sysmem.o \
-./Core/Src/system_stm32f7xx.o 
+./Core/Src/system_stm32f7xx.o \
+./Core/Src/utils.o 
 
 C_DEPS += \
 ./Core/Src/NetworkCycle.d \
@@ -39,12 +43,14 @@ C_DEPS += \
 ./Core/Src/freertos.d \
 ./Core/Src/main.d \
 ./Core/Src/mqtt.d \
+./Core/Src/saveFlashCycle.d \
 ./Core/Src/stm32f7xx_hal_msp.d \
 ./Core/Src/stm32f7xx_hal_timebase_tim.d \
 ./Core/Src/stm32f7xx_it.d \
 ./Core/Src/syscalls.d \
 ./Core/Src/sysmem.d \
-./Core/Src/system_stm32f7xx.d 
+./Core/Src/system_stm32f7xx.d \
+./Core/Src/utils.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
@@ -54,7 +60,7 @@ Core/Src/%.o Core/Src/%.su Core/Src/%.cyclo: ../Core/Src/%.c Core/Src/subdir.mk
 clean: clean-Core-2f-Src
 
 clean-Core-2f-Src:
-	-$(RM) ./Core/Src/NetworkCycle.cyclo ./Core/Src/NetworkCycle.d ./Core/Src/NetworkCycle.o ./Core/Src/NetworkCycle.su ./Core/Src/config.cyclo ./Core/Src/config.d ./Core/Src/config.o ./Core/Src/config.su ./Core/Src/cycle.cyclo ./Core/Src/cycle.d ./Core/Src/cycle.o ./Core/Src/cycle.su ./Core/Src/freertos.cyclo ./Core/Src/freertos.d ./Core/Src/freertos.o ./Core/Src/freertos.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/mqtt.cyclo ./Core/Src/mqtt.d ./Core/Src/mqtt.o ./Core/Src/mqtt.su ./Core/Src/stm32f7xx_hal_msp.cyclo ./Core/Src/stm32f7xx_hal_msp.d ./Core/Src/stm32f7xx_hal_msp.o ./Core/Src/stm32f7xx_hal_msp.su ./Core/Src/stm32f7xx_hal_timebase_tim.cyclo ./Core/Src/stm32f7xx_hal_timebase_tim.d ./Core/Src/stm32f7xx_hal_timebase_tim.o ./Core/Src/stm32f7xx_hal_timebase_tim.su ./Core/Src/stm32f7xx_it.cyclo ./Core/Src/stm32f7xx_it.d ./Core/Src/stm32f7xx_it.o ./Core/Src/stm32f7xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f7xx.cyclo ./Core/Src/system_stm32f7xx.d ./Core/Src/system_stm32f7xx.o ./Core/Src/system_stm32f7xx.su
+	-$(RM) ./Core/Src/NetworkCycle.cyclo ./Core/Src/NetworkCycle.d ./Core/Src/NetworkCycle.o ./Core/Src/NetworkCycle.su ./Core/Src/config.cyclo ./Core/Src/config.d ./Core/Src/config.o ./Core/Src/config.su ./Core/Src/cycle.cyclo ./Core/Src/cycle.d ./Core/Src/cycle.o ./Core/Src/cycle.su ./Core/Src/freertos.cyclo ./Core/Src/freertos.d ./Core/Src/freertos.o ./Core/Src/freertos.su ./Core/Src/main.cyclo ./Core/Src/main.d ./Core/Src/main.o ./Core/Src/main.su ./Core/Src/mqtt.cyclo ./Core/Src/mqtt.d ./Core/Src/mqtt.o ./Core/Src/mqtt.su ./Core/Src/saveFlashCycle.cyclo ./Core/Src/saveFlashCycle.d ./Core/Src/saveFlashCycle.o ./Core/Src/saveFlashCycle.su ./Core/Src/stm32f7xx_hal_msp.cyclo ./Core/Src/stm32f7xx_hal_msp.d ./Core/Src/stm32f7xx_hal_msp.o ./Core/Src/stm32f7xx_hal_msp.su ./Core/Src/stm32f7xx_hal_timebase_tim.cyclo ./Core/Src/stm32f7xx_hal_timebase_tim.d ./Core/Src/stm32f7xx_hal_timebase_tim.o ./Core/Src/stm32f7xx_hal_timebase_tim.su ./Core/Src/stm32f7xx_it.cyclo ./Core/Src/stm32f7xx_it.d ./Core/Src/stm32f7xx_it.o ./Core/Src/stm32f7xx_it.su ./Core/Src/syscalls.cyclo ./Core/Src/syscalls.d ./Core/Src/syscalls.o ./Core/Src/syscalls.su ./Core/Src/sysmem.cyclo ./Core/Src/sysmem.d ./Core/Src/sysmem.o ./Core/Src/sysmem.su ./Core/Src/system_stm32f7xx.cyclo ./Core/Src/system_stm32f7xx.d ./Core/Src/system_stm32f7xx.o ./Core/Src/system_stm32f7xx.su ./Core/Src/utils.cyclo ./Core/Src/utils.d ./Core/Src/utils.o ./Core/Src/utils.su
 
 .PHONY: clean-Core-2f-Src
 

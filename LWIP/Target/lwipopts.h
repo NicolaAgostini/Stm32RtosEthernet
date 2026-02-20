@@ -31,6 +31,8 @@
 /* Within 'USER CODE' section, code will be kept by default at each generation */
 /* USER CODE BEGIN 0 */
 
+#include "utils.h" //where there is callback set_rtc_from_sntp(sec)
+
 /* USER CODE END 0 */
 
 #ifdef __cplusplus
@@ -57,6 +59,8 @@
 #define MEM_SIZE 10*1024
 /*----- Default Value for F7 devices: 0x20048000 -----*/
 #define LWIP_RAM_HEAP_POINTER 0x20048000
+/*----- Default Value for MEMP_NUM_SYS_TIMEOUT: 3 ---*/
+#define MEMP_NUM_SYS_TIMEOUT 15
 /*----- Value in opt.h for LWIP_ETHERNET: LWIP_ARP || PPPOE_SUPPORT -*/
 #define LWIP_ETHERNET 1
 /*----- Value in opt.h for LWIP_DNS_SECURE: (LWIP_DNS_SECURE_RAND_XID | LWIP_DNS_SECURE_NO_MULTIPLE_OUTSTANDING | LWIP_DNS_SECURE_RAND_SRC_PORT) -*/
@@ -93,6 +97,8 @@
 #define DEFAULT_ACCEPTMBOX_SIZE 6
 /*----- Value in opt.h for RECV_BUFSIZE_DEFAULT: INT_MAX -----*/
 #define RECV_BUFSIZE_DEFAULT 2000000000
+/*----- Default Value for LWIP_SNTP: 0 ---*/
+#define LWIP_SNTP 1
 /*----- Value in opt.h for LWIP_STATS: 1 -----*/
 #define LWIP_STATS 0
 /*----- Value in opt.h for CHECKSUM_GEN_IP: 1 -----*/
@@ -122,6 +128,20 @@
 #define LWIP_SO_RCVTIMEO                1
 #define LWIP_SO_SNDTIMEO                1
 #define LWIP_TCPIP_CORE_LOCKING    		1 //per bloccare lo stack di rete quando viene chiamato un task esterno
+
+ //for SNTP datetime server DNS
+#define SNTP_CHECK_RESPONSE           1
+#define SNTP_UPDATE_DELAY             3600000 // update every hour in ms
+
+#define SNTP_SET_SYSTEM_TIME(sec) set_rtc_from_sntp(sec)
+#define SNTP_SET_SYSTEM_TIME_US(sec, us) set_rtc_from_sntp(sec)
+#define LWIP_SNTP 1
+
+#define LWIP_DNS 1                  // Attiva il modulo DNS
+#define DNS_TABLE_SIZE 4            // Numero di risoluzioni contemporanee
+#define DNS_MAX_SERVERS 2           // Numero di server DNS (Primario e Secondario)
+#define SNTP_SERVER_DNS 1           // Permette a SNTP di usare i nomi host
+
 
 /* USER CODE END 1 */
 
