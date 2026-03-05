@@ -1,0 +1,2 @@
+../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cryp_ex.c:127:19:HAL_CRYPEx_AESGCM_GenerateAuthTAG	15
+../Drivers/STM32F7xx_HAL_Driver/Src/stm32f7xx_hal_cryp_ex.c:355:19:HAL_CRYPEx_AESCCM_GenerateAuthTAG	15

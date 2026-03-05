@@ -45,12 +45,16 @@
 #define WITH_RTOS 1
 /* Temporary workaround to avoid conflict on errno defined in STM32CubeIDE and lwip sys_arch.c errno */
 #undef LWIP_PROVIDE_ERRNO
+/*----- WITH_MBEDTLS enabled (Since MBEDTLS and FREERTOS are set) -----*/
+#define WITH_MBEDTLS 1
 /*----- CHECKSUM_BY_HARDWARE enabled -----*/
 #define CHECKSUM_BY_HARDWARE 1
 /*-----------------------------------------------------------------------------*/
 
 /* LwIP Stack Parameters (modified compared to initialization value in opt.h) -*/
 /* Parameters set in STM32CubeMX LwIP Configuration GUI -*/
+/*----- Value in opt.h for LWIP_DNS: 0 -----*/
+#define LWIP_DNS 1
 /*----- Default Value for MEMP_NUM_TCP_PCB: 5 ---*/
 #define MEMP_NUM_TCP_PCB 8
 /*----- Value in opt.h for MEM_ALIGNMENT: 1 -----*/
@@ -59,7 +63,7 @@
 #define MEM_SIZE 10*1024
 /*----- Default Value for F7 devices: 0x20048000 -----*/
 #define LWIP_RAM_HEAP_POINTER 0x20048000
-/*----- Default Value for MEMP_NUM_SYS_TIMEOUT: 3 ---*/
+/*----- Default Value for MEMP_NUM_SYS_TIMEOUT: 4 ---*/
 #define MEMP_NUM_SYS_TIMEOUT 15
 /*----- Value in opt.h for LWIP_ETHERNET: LWIP_ARP || PPPOE_SUPPORT -*/
 #define LWIP_ETHERNET 1
@@ -73,6 +77,10 @@
 #define TCP_SNDQUEUELOWAT 5
 /*----- Value in opt.h for TCP_WND_UPDATE_THRESHOLD: LWIP_MIN(TCP_WND/4, TCP_MSS*4) -----*/
 #define TCP_WND_UPDATE_THRESHOLD 536
+/*----- Default Value for LWIP_ALTCP: 0 ---*/
+#define LWIP_ALTCP 1
+/*----- Default Value for LWIP_ALTCP_TLS: 0 ---*/
+#define LWIP_ALTCP_TLS 1
 /*----- Value in opt.h for LWIP_NETIF_LINK_CALLBACK: 0 -----*/
 #define LWIP_NETIF_LINK_CALLBACK 1
 /*----- Value in opt.h for TCPIP_THREAD_STACKSIZE: 0 -----*/
@@ -97,6 +105,10 @@
 #define DEFAULT_ACCEPTMBOX_SIZE 6
 /*----- Value in opt.h for RECV_BUFSIZE_DEFAULT: INT_MAX -----*/
 #define RECV_BUFSIZE_DEFAULT 2000000000
+/*----- Value in opt.h for LWIP_USE_EXTERNAL_MBEDTLS: 0 -----*/
+#define LWIP_USE_EXTERNAL_MBEDTLS 1
+/*----- Default Value for LWIP_HTTPD: 0 ---*/
+#define LWIP_HTTPD 1
 /*----- Default Value for LWIP_SNTP: 0 ---*/
 #define LWIP_SNTP 1
 /*----- Value in opt.h for LWIP_STATS: 1 -----*/
@@ -142,6 +154,12 @@
 #define DNS_MAX_SERVERS 2           // Numero di server DNS (Primario e Secondario)
 #define SNTP_SERVER_DNS 1           // Permette a SNTP di usare i nomi host
 
+ //for TLS
+#define LWIP_ALTCP_TLS_MBEDTLS   1
+
+/* Aumenta il numero di PCB per gestire il tunnel TLS */
+#undef MEMP_NUM_ALTCP_PCB
+#define MEMP_NUM_ALTCP_PCB       8
 
 /* USER CODE END 1 */
 

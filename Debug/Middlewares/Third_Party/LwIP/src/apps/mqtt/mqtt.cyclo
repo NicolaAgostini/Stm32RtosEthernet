@@ -33,6 +33,6 @@
 ../Middlewares/Third_Party/LwIP/src/apps/mqtt/mqtt.c:1238:1:mqtt_set_inpub_callback	2
 ../Middlewares/Third_Party/LwIP/src/apps/mqtt/mqtt.c:1254:1:mqtt_client_new	1
 ../Middlewares/Third_Party/LwIP/src/apps/mqtt/mqtt.c:1266:1:mqtt_client_free	1
-../Middlewares/Third_Party/LwIP/src/apps/mqtt/mqtt.c:1283:1:mqtt_client_connect	30
+../Middlewares/Third_Party/LwIP/src/apps/mqtt/mqtt.c:1283:1:mqtt_client_connect	31
 ../Middlewares/Third_Party/LwIP/src/apps/mqtt/mqtt.c:1437:1:mqtt_disconnect	3
 ../Middlewares/Third_Party/LwIP/src/apps/mqtt/mqtt.c:1456:1:mqtt_client_is_connected	2

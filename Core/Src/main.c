@@ -19,7 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "lwip.h"
+#include "mbedtls.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -45,7 +45,8 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+osSemaphoreId sntpSyncSemHandle; //semaforo per sincronizzazione SNTP e TLS
+RNG_HandleTypeDef hrng;
 
 /* USER CODE END PD */
 
@@ -56,7 +57,19 @@
 
 /* Private variables ---------------------------------------------------------*/
 
+CRYP_HandleTypeDef hcryp;
+__ALIGN_BEGIN static const uint32_t pKeyCRYP[4] __ALIGN_END = {
+                            0x00000000,0x00000000,0x00000000,0x00000000};
+__ALIGN_BEGIN static const uint32_t pInitVectCRYP[4] __ALIGN_END = {
+                            0x00000000,0x00000000,0x00000000,0x00000002};
+__ALIGN_BEGIN static const uint32_t HeaderCRYP[1] __ALIGN_END = {
+                            0x00000000};
+
+HASH_HandleTypeDef hhash;
+
 I2C_HandleTypeDef hi2c1;
+
+RNG_HandleTypeDef hrng;
 
 RTC_HandleTypeDef hrtc;
 
@@ -72,6 +85,8 @@ osThreadId saveFlashHandle;
 osMessageQId flashQueueHandle;
 /* USER CODE BEGIN PV */
 
+extern void MX_LWIP_Init(void);
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -82,6 +97,9 @@ static void MX_I2C1_Init(void);
 static void MX_USART3_UART_Init(void);
 static void MX_USB_OTG_FS_PCD_Init(void);
 static void MX_RTC_Init(void);
+static void MX_CRYP_Init(void);
+static void MX_HASH_Init(void);
+static void MX_RNG_Init(void);
 void StartDefaultTask(void const * argument);
 void StartInputTask(void const * argument);
 void Handle_MQTT(void const * argument);
@@ -124,6 +142,7 @@ int main(void)
 
   /* USER CODE BEGIN Init */
 
+
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -139,10 +158,17 @@ int main(void)
   MX_USART3_UART_Init();
   MX_USB_OTG_FS_PCD_Init();
   MX_RTC_Init();
+  MX_CRYP_Init();
+  MX_HASH_Init();
+  MX_RNG_Init();
+  /* Call PreOsInit function */
+  MX_MBEDTLS_Init();
   /* USER CODE BEGIN 2 */
 
-  //osSemaphoreDef(mqtt_mutex);
-  //mqtt_mutexHandle = osSemaphoreCreate(osSemaphore(mqtt_mutex), 1);
+  //semaforo per sincronizzazione SNTP con TLS
+  osSemaphoreDef(sntpSyncSem);
+  sntpSyncSemHandle = osSemaphoreCreate(osSemaphore(sntpSyncSem), 1);
+  osSemaphoreWait(sntpSyncSemHandle, 0);
 
   /* USER CODE END 2 */
 
@@ -177,7 +203,7 @@ int main(void)
   InputTaskHandle = osThreadCreate(osThread(InputTask), NULL);
 
   /* definition and creation of mqtt_task */
-  osThreadDef(mqtt_task, Handle_MQTT, osPriorityLow, 0, 8192);
+  osThreadDef(mqtt_task, Handle_MQTT, osPriorityLow, 0, 16384);
   mqtt_taskHandle = osThreadCreate(osThread(mqtt_task), NULL);
 
   /* definition and creation of networkTask */
@@ -260,6 +286,66 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief CRYP Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_CRYP_Init(void)
+{
+
+  /* USER CODE BEGIN CRYP_Init 0 */
+
+  /* USER CODE END CRYP_Init 0 */
+
+  /* USER CODE BEGIN CRYP_Init 1 */
+
+  /* USER CODE END CRYP_Init 1 */
+  hcryp.Instance = CRYP;
+  hcryp.Init.DataType = CRYP_DATATYPE_32B;
+  hcryp.Init.KeySize = CRYP_KEYSIZE_128B;
+  hcryp.Init.pKey = (uint32_t *)pKeyCRYP;
+  hcryp.Init.pInitVect = (uint32_t *)pInitVectCRYP;
+  hcryp.Init.Algorithm = CRYP_AES_GCM;
+  hcryp.Init.Header = (uint32_t *)HeaderCRYP;
+  hcryp.Init.HeaderSize = 1;
+  hcryp.Init.DataWidthUnit = CRYP_DATAWIDTHUNIT_WORD;
+  if (HAL_CRYP_Init(&hcryp) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN CRYP_Init 2 */
+
+  /* USER CODE END CRYP_Init 2 */
+
+}
+
+/**
+  * @brief HASH Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_HASH_Init(void)
+{
+
+  /* USER CODE BEGIN HASH_Init 0 */
+
+  /* USER CODE END HASH_Init 0 */
+
+  /* USER CODE BEGIN HASH_Init 1 */
+
+  /* USER CODE END HASH_Init 1 */
+  hhash.Init.DataType = HASH_DATATYPE_32B;
+  if (HAL_HASH_Init(&hhash) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN HASH_Init 2 */
+
+  /* USER CODE END HASH_Init 2 */
+
+}
+
+/**
   * @brief I2C1 Initialization Function
   * @param None
   * @retval None
@@ -304,6 +390,32 @@ static void MX_I2C1_Init(void)
   /* USER CODE BEGIN I2C1_Init 2 */
 
   /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief RNG Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RNG_Init(void)
+{
+
+  /* USER CODE BEGIN RNG_Init 0 */
+
+  /* USER CODE END RNG_Init 0 */
+
+  /* USER CODE BEGIN RNG_Init 1 */
+
+  /* USER CODE END RNG_Init 1 */
+  hrng.Instance = RNG;
+  if (HAL_RNG_Init(&hrng) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RNG_Init 2 */
+
+  /* USER CODE END RNG_Init 2 */
 
 }
 
@@ -526,8 +638,6 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
-  /* init code for LWIP */
-  MX_LWIP_Init();
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
   for(;;)
@@ -569,7 +679,7 @@ void Handle_MQTT(void const * argument)
   /* USER CODE BEGIN Handle_MQTT */
   /* Infinite loop */
 	//
-
+	osDelay(2000); //piccolo ritardo per aspettare l'inizializzazione di LWIP
 	MQTT_Cycle();
 
 
@@ -588,13 +698,14 @@ void NetworkTask_Cycle(void const * argument)
 {
   /* USER CODE BEGIN NetworkTask_Cycle */
   /* Infinite loop */
-
-  for(;;)
-  {
+	MX_LWIP_Init(); //NB: importantissima inizializzazione di lwIP
+	printf("LwIP inizializzato correttamente!\r\n");
+	for(;;)
+	{
 	  //printf("Task network!\r\n");
 	  Network_Cycle();
 	  osDelay(10);
-  }
+	}
   /* USER CODE END NetworkTask_Cycle */
 }
 

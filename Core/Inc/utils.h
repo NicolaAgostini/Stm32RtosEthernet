@@ -9,6 +9,9 @@
 #define INC_UTILS_H_
 
 #include <stdint.h>
+#include "cmsis_os.h"
+
+
 
 void set_rtc_from_sntp(uint32_t sec);
 void start_sntp_service(void);

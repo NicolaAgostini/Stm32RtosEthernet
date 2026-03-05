@@ -19,13 +19,18 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cortex.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cryp.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cryp_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_hash.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_hash_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_i2c.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_i2c_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pwr.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pwr_ex.h \
+ ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rng.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rtc.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rtc_ex.h \
  ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim.h \
@@ -52,41 +57,32 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h \
  ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h \
- ../LWIP/App/lwip.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/opt.h \
- ../LWIP/Target/lwipopts.h ../Core/Inc/utils.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/debug.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/arch.h \
- ../Middlewares/Third_Party/LwIP/system/arch/cc.h \
- ../Middlewares/Third_Party/LwIP/system/arch/cpu.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/mem.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/memp.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/priv/memp_std.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/priv/memp_priv.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/priv/mem_priv.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/stats.h \
- ../Middlewares/Third_Party/LwIP/src/include/netif/etharp.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/etharp.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/pbuf.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/err.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/ip4_addr.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/def.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/netif.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/ip_addr.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/ip6_addr.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/def.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/ip4.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ip4.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ethernet.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ieee.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/etharp.h \
- ../Middlewares/Third_Party/LwIP/src/include/netif/ethernet.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/dhcp.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/timeouts.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/sys.h \
- ../Middlewares/Third_Party/LwIP/system/arch/sys_arch.h \
- ../LWIP/Target/ethernetif.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h \
+ ../MBEDTLS/App/mbedtls.h ../MBEDTLS/App/mbedtls_config.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/check_config.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/ssl.h \
+ ../MBEDTLS/App/mbedtls_config.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/bignum.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/ecp.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/ssl_ciphersuites.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/pk.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/md.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/rsa.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/ecdsa.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/cipher.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/platform_util.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/platform_time.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/x509_crt.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/x509.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/asn1.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/x509_crl.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/dhm.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/ecdh.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/entropy.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/sha512.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/ctr_drbg.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/aes.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/debug.h \
+ ../Middlewares/Third_Party/mbedTLS/include/mbedtls/ssl.h \
  ../Core/Inc/cycle.h ../Core/Inc/mqtt.h \
  ../Middlewares/PahoMQTT/include/MQTTClient.h \
  ../Middlewares/PahoMQTT/include/MQTTPacket.h \
@@ -99,7 +95,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Middlewares/PahoMQTT/include/Timer.h \
  ../Middlewares/PahoMQTT/include/NetworkInterface.h \
  ../Middlewares/PahoMQTT/include/NetworkInterface.h \
- ../Core/Inc/NetworkCycle.h ../Core/Inc/saveFlashCycle.h
+ ../Core/Inc/NetworkCycle.h ../Core/Inc/saveFlashCycle.h \
+ ../Core/Inc/utils.h
 ../Core/Inc/main.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal.h:
 ../Core/Inc/stm32f7xx_hal_conf.h:
@@ -121,13 +118,18 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_dma_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cortex.h:
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cryp.h:
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_cryp_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_eth.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_flash_ex.h:
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_hash.h:
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_hash_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_i2c.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_i2c_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pwr.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_pwr_ex.h:
+../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rng.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rtc.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_rtc_ex.h:
 ../Drivers/STM32F7xx_HAL_Driver/Inc/stm32f7xx_hal_tim.h:
@@ -154,42 +156,33 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/Third_Party/FreeRTOS/Source/include/queue.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/event_groups.h:
 ../Middlewares/Third_Party/FreeRTOS/Source/include/timers.h:
-../LWIP/App/lwip.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/opt.h:
-../LWIP/Target/lwipopts.h:
-../Core/Inc/utils.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/debug.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/arch.h:
-../Middlewares/Third_Party/LwIP/system/arch/cc.h:
-../Middlewares/Third_Party/LwIP/system/arch/cpu.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/mem.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/memp.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/priv/memp_std.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/priv/memp_priv.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/priv/mem_priv.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/stats.h:
-../Middlewares/Third_Party/LwIP/src/include/netif/etharp.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/etharp.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/pbuf.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/err.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/ip4_addr.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/def.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/netif.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/ip_addr.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/ip6_addr.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/def.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/ip4.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ip4.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ethernet.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/prot/ieee.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/prot/etharp.h:
-../Middlewares/Third_Party/LwIP/src/include/netif/ethernet.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/dhcp.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/timeouts.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/sys.h:
-../Middlewares/Third_Party/LwIP/system/arch/sys_arch.h:
-../LWIP/Target/ethernetif.h:
-../Middlewares/Third_Party/LwIP/src/include/lwip/tcpip.h:
+../MBEDTLS/App/mbedtls.h:
+../MBEDTLS/App/mbedtls_config.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/check_config.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/ssl.h:
+../MBEDTLS/App/mbedtls_config.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/bignum.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/ecp.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/ssl_ciphersuites.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/pk.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/md.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/rsa.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/ecdsa.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/cipher.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/platform_util.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/platform_time.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/x509_crt.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/x509.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/asn1.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/x509_crl.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/dhm.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/ecdh.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/entropy.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/sha512.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/ctr_drbg.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/aes.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/debug.h:
+../Middlewares/Third_Party/mbedTLS/include/mbedtls/ssl.h:
 ../Core/Inc/cycle.h:
 ../Core/Inc/mqtt.h:
 ../Middlewares/PahoMQTT/include/MQTTClient.h:
@@ -205,3 +198,4 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Middlewares/PahoMQTT/include/NetworkInterface.h:
 ../Core/Inc/NetworkCycle.h:
 ../Core/Inc/saveFlashCycle.h:
+../Core/Inc/utils.h:

@@ -16,4 +16,5 @@ void MQTT_Cycle(void);
 void messageArrived(MessageData* data);
 void sendWatchdog(uint32_t counter);
 
+
 #endif

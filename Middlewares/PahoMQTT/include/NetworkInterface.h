@@ -25,4 +25,12 @@ int NetworkDisconnect(Network* n);
 int NetworkRead(Network* n, unsigned char* buffer, int len, int timeout_ms);
 int NetworkWrite(Network* n, unsigned char* buffer, int len, int timeout_ms);
 
+//per Mbed TLS
+int TLS_NetworkRead(Network* n, unsigned char* buffer, int len, int timeout_ms);
+int TLS_NetworkWrite(Network* n, unsigned char* buffer, int len, int timeout_ms);
+int TLS_NetworkConnect(Network* n, const char* addr, int port);
+
+void my_debug(void *ctx, int level, const char *file, int line, const char *str) ;
+
+
 #endif

@@ -10,6 +10,7 @@
 
 extern const char *MQTT_BROKER_IP;
 extern const int MQTT_BROKER_PORT;
-
+extern const char *usernameTLS;
+extern const char *passwordTLS;
 
 #endif /* INC_CONFIG_H_ */

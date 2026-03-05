@@ -15,10 +15,17 @@
 #include "lwip/apps/sntp.h"
 #include "lwip/apps/sntp_opts.h"
 
+#include "cmsis_os.h"
+#include "main.h"
 
 // Recuperiamo l'handle dell'RTC definito nel main.c
 extern RTC_HandleTypeDef hrtc;
 
+
+
+
+
+//callback definita in lwipopts.h tramite macro   #define SNTP_SET_SYSTEM_TIME(sec)   set_rtc_from_sntp(sec)
 void set_rtc_from_sntp(uint32_t sec) {
     RTC_TimeTypeDef sTime = {0};
     RTC_DateTypeDef sDate = {0};
@@ -45,7 +52,17 @@ void set_rtc_from_sntp(uint32_t sec) {
     sDate.Year    = timeinfo->tm_year - 100;
     HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN);
 
-    printf("SNTP [Utils]: Ora aggiornata correttamente.\r\n");
+    printf("SNTP [Utils]: Ora aggiornata correttamente: %02d:%02d:%02d  Data:%02d:%02d:%04d \r\n",
+    		sTime.Hours, sTime.Minutes, sTime.Seconds, sDate.Date, sDate.Month, ((uint32_t)sDate.Year)+2000);
+
+
+    if (sntpSyncSemHandle != NULL)
+    {
+    	printf("Semaforo rilasciato da parte di SNTP !! \n");
+        osSemaphoreRelease(sntpSyncSemHandle);
+    }
+
+
 }
 
 // Utility extra per leggere l'ora velocemente nei log

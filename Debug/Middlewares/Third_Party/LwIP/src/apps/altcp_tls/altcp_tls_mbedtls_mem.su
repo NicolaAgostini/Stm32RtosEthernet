@@ -1,0 +1,5 @@
+../Middlewares/Third_Party/LwIP/src/apps/altcp_tls/altcp_tls_mbedtls_mem.c:161:1:altcp_mbedtls_mem_init	4	static
+../Middlewares/Third_Party/LwIP/src/apps/altcp_tls/altcp_tls_mbedtls_mem.c:172:1:altcp_mbedtls_alloc	24	static
+../Middlewares/Third_Party/LwIP/src/apps/altcp_tls/altcp_tls_mbedtls_mem.c:182:1:altcp_mbedtls_free	16	static
+../Middlewares/Third_Party/LwIP/src/apps/altcp_tls/altcp_tls_mbedtls_mem.c:190:1:altcp_mbedtls_alloc_config	24	static
+../Middlewares/Third_Party/LwIP/src/apps/altcp_tls/altcp_tls_mbedtls_mem.c:203:1:altcp_mbedtls_free_config	16	static
