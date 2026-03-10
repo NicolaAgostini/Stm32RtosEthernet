@@ -724,7 +724,7 @@ void SaveFlashMemory(void const * argument)
 
 	//recupero valori ultimi dalla flash
 	uint32_t counter[7];
-	uint8_t val = Flash_Read(&counter);
+	uint8_t val = Flash_Read(counter);
 
 	if(val != -1)
 	{

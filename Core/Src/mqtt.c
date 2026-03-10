@@ -15,17 +15,23 @@
 #include "lwip/apps/sntp.h"
 #include "utils.h"
 #include "main.h"
-
+#include <string.h>
+#include "lwip/dns.h"
+#include <sys/time.h>
+#include <time.h>
 
 extern struct netif gnetif;
 extern osMessageQId flashQueueHandle;
 extern RTC_HandleTypeDef hrtc; // Recuperiamo l'handle dell'RTC definito nel main.c
+extern int _gettimeofday(struct timeval *tv, void *tzvp);
 
 
 Network network;
 MQTTClient client;
 __attribute__((aligned(4))) unsigned char sendbuf[2048];
 __attribute__((aligned(4))) unsigned char readbuf[2048];
+
+int intFromBroker = 0; //data from broker to test TLS connection MQTT
 
 //osSemaphoreId mqtt_mutexHandle;
 
@@ -36,6 +42,7 @@ typedef enum {
     MQTT_STATE_RUNNING,
     MQTT_STATE_ERROR
 } mqtt_state_t;
+
 
 
 
@@ -50,6 +57,17 @@ void messageArrived(MessageData* data)
     printf("MQTT RX payload: %.*s\r\n",
            data->message->payloadlen,
            (char*)data->message->payload);
+
+    //qui imposto il valore nella variabile arrivata dal Broker
+    char payload_string[16];
+    int len = (data->message->payloadlen > 15) ? 15 : data->message->payloadlen;
+    memcpy(payload_string, data->message->payload, len);
+    payload_string[len] = '\0';
+    //converto stringa che arriva dal payload del broker in intero
+    intFromBroker = atoi(payload_string);
+
+    printf("Messaggio ricevuto sul topic: %.*s -> Convertito in int: %d\n",
+                data->message->payloadlen, (char*)data->message->payload, intFromBroker);
 
 }
 
@@ -74,8 +92,9 @@ void sendWatchdog(uint32_t counter)
 	// Prepara il messaggio
 	MQTTMessage pubMessage;
 	static char payloadBuffer[128];
-	snprintf(payloadBuffer, sizeof(payloadBuffer), "WatchDog da STM32!, Ora: %02d:%02d:%02d Data: %02d:%02d:%04d Conteggio: %lu", sTime.Hours,
-			sTime.Minutes, sTime.Seconds, sDate.Date, sDate.Month, sDate.Year+2000, counter);
+	snprintf(payloadBuffer, sizeof(payloadBuffer), "WatchDog da STM32!, Ora: %02d:%02d:%02d Data: %02d:%02d:%04d Conteggio: %lu, "
+			"Data from broker %d",sTime.Hours, sTime.Minutes, sTime.Seconds, sDate.Date, sDate.Month, sDate.Year+2000, counter,
+			intFromBroker);
 
 
 

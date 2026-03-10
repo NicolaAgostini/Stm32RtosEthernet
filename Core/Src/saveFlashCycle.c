@@ -8,12 +8,13 @@
 
 #include "stm32f7xx_hal.h"
 #include <stdio.h>
+#include "utils.h"
 
 #define ADDR_FLASH_SECTOR_7     ((uint32_t)0x080C0000) /* Base @ of Sector 7, 256 Kbytes */
 #define FLASH_SECTOR_SIZE (256 * 1024) // 256KB per il settore 7
 
 extern osMessageQId flashQueueHandle;
-
+extern void Flash_Write(uint32_t data);
 
 static bool BtnPC11_ActState = false;
 static bool echoBtnPC11 = false;

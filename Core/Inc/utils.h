@@ -15,6 +15,7 @@
 
 void set_rtc_from_sntp(uint32_t sec);
 void start_sntp_service(void);
-
+int get_system_time_string(uint8_t *, uint8_t *, uint8_t *, uint8_t *, uint8_t *, uint8_t *);
+void set_rtc_manual(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 
 #endif /* INC_UTILS_H_ */

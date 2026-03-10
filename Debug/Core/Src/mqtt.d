@@ -91,7 +91,8 @@ Core/Src/mqtt.o: ../Core/Src/mqtt.c \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/priv/mem_priv.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/sntp.h \
  ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/sntp_opts.h \
- ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/iana.h
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/iana.h \
+ ../Middlewares/Third_Party/LwIP/src/include/lwip/dns.h
 ../Middlewares/PahoMQTT/include/MQTTClient.h:
 ../Middlewares/PahoMQTT/include/MQTTPacket.h:
 ../Middlewares/PahoMQTT/include/MQTTConnect.h:
@@ -187,3 +188,4 @@ Core/Src/mqtt.o: ../Core/Src/mqtt.c \
 ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/sntp.h:
 ../Middlewares/Third_Party/LwIP/src/include/lwip/apps/sntp_opts.h:
 ../Middlewares/Third_Party/LwIP/src/include/lwip/prot/iana.h:
+../Middlewares/Third_Party/LwIP/src/include/lwip/dns.h:
